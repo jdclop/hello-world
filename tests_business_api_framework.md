@@ -15,7 +15,7 @@ There are three types of requests in this script. The first one creates a rule, 
 |---|:--------------|:----------|:------|:----------|:------------------------|
 | 1 | /oauth2/authorize?response_type=code&client_id={client_id}&state={state}&redirect_uri=http://proxy.docker:8004/auth/fiware/callback	 |  Login on Keyrock	| POST	| ![Login data](./payloadLogin.png) | 100 |
 | 2 | /DSProductCatalog/api/catalogManagement/v2/category	 | Create new Category | POST | ![Create Category data](./payloadCreateCategory.png) |100 |
-| 3 | /logout	 |	Logout | POST |  | 100 |
+| 3 | /logout	 |	Logout | POST | None  | 100 |
 
 Regarding the variables
 
@@ -26,37 +26,24 @@ Regarding the variables
 
 ## Test Case 2.- Stress Scenario 2 – Create new Catalog ##
 
-It's analogous to the test case 1. The only difference is that this time the Security level parameter has been configured to “low”, and the log file to “info”.
-
-
-## Test Case 3.- Stability Scenario ##
-
-The goal of this scenario is to check if the system is degraded with a moderate load for a long period of time. This case is analogous to test case 2 the difference is that it's stability test not a stress one.
-
-The test adds one thread every ten seconds to reach 30 and lasts 6 hours. 
-
-Actors and requests are the same than in the first test case so it's not needed to explain them again.
-
-
-## Test Case 4.- Facts Stress Scenario ##
-
-Stress scenario, similar to the test cases 1 and 2, but this time, a fact is sent to the Facts component.
-
-![Facts](./scenarioBosun-diagram2.png)
-
-The actors that are involved are the same than the ones that have been used during all the cases.
-
-There is just one type of request that simulatse the operation that the context broker used to send data to the Policy Manager 
+It's analogous to the test case 1. The only difference is that we are creating a new Catalog instead of Category.
 
 |ID	| GE API method	| Operation	| Type	| Payload	| Max. Concurrent Threads |
 |---|:--------------|:----------|:------|:----------|:------------------------|
-| 1 |	v1.0/${TENANT}/servers/${SERVER} |  Fact sending	| POST	| ![Facts Sending](./facts.png) | 300 |
+| 1 | /oauth2/authorize?response_type=code&client_id={client_id}&state={state}&redirect_uri=http://proxy.docker:8004/auth/fiware/callback	 |  Login on Keyrock	| POST	| ![Login data](./payloadLogin.png) | 100 |
+| 2 | /DSProductCatalog/api/catalogManagement/v2/category	 | Create new Catalog | POST | ![Create Category data](./payloadCreateCatalog.png) |100 |
+| 3 | /logout	 |	Logout | POST | None  | 100 |
 
-The variables are explained in the first test case.
+Regarding the variables
 
+- **email**: Admin email to login on Keyrock.
+- **pass**: Admin pass for the email to login on Keyrock.
+- **catalog_name**: Name for the new Catalog.
 
-## Test Case 5.- Facts Stability Scenario ##
+## Test Case 3.- Stability Scenario - Create new Catalog and Category (at the same time) ##
 
-This scenario is similar to the test case 3, but using the same facts scenario than in the test case 4.
+The goal of this scenario is to check if the system is degraded with a moderate load for a long period of time. This case is composed by the two previous test cases: Create a category and catalog at the same time. The difference is that it's stability test not a stress one.
 
-The test adds one thread every 60 seconds to reach 30 and lasts 6 hours. 
+The test adds two thread (user) every 30 seconds to reach 40 users and it is running for 6 hours. 
+
+Actors and requests are the same than in the first and second test cases so it's not needed to explain them again.
