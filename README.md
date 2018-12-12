@@ -28,6 +28,18 @@ Regarding the variables
 
 It's analogous to the test case 1. The only difference is that we are creating a new Catalog instead of Category.
 
+|ID	| GE API method	| Operation	| Type	| Payload	| Max. Concurrent Threads |
+|---|:--------------|:----------|:------|:----------|:------------------------|
+| 1 | /oauth2/authorize?response_type=code&client_id={client_id}&state={state}&redirect_uri=http://proxy.docker:8004/auth/fiware/callback	 |  Login on Keyrock	| POST	| ![Login data](./payloadLogin.png) | 100 |
+| 2 | /DSProductCatalog/api/catalogManagement/v2/category	 | Create new Catalog | POST | ![Create Category data](./payloadCreateCatalog.png) |100 |
+| 3 | /logout	 |	Logout | POST | None  | 100 |
+
+Regarding the variables
+
+- **email**: Admin email to login on Keyrock.
+- **pass**: Admin pass for the email to login on Keyrock.
+- **catalog_name**: Name for the new Catalog.
+
 ## Test Case 3.- Stability Scenario - Create new Catalog and Category (at the same time) ##
 
 The goal of this scenario is to check if the system is degraded with a moderate load for a long period of time. This case is composed by the two previous test cases: Create a category and catalog at the same time. The difference is that it's stability test not a stress one.
