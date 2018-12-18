@@ -1,49 +1,49 @@
-# Business API Framework: test cases description #
+# FogFlow: test cases description #
 
-The scenarios defined for stress testing are taken as example of a data written to database.
+The scenarios defined for testing are taken as example of a data written to database, querying and deletion.
 
-- `Create new Catalog`
-- `Create new Category` 
+- `Stress`
+- `Stability` 
 
-## Test Case 1.- Stress Scenario 1 – Create new Category ##
+## Test Case 1.- Stress Scenario 1  ##
 
-The goal of this scenario is to assess system performance with a high load in a short period of time. In this test we login on Keyrock to access to Business API framework, the same operation is realized to logout, so there is comunnication between both.
+The goal of this scenario is to assess system performance with a high load in a short period of time. In this test we all services provided in API. 
 
-There are three types of requests in this script. The first one creates a rule, then a subscription to that rule is done and finally we unsubscribe the previous rule.We add one thread every four seconds to reach 300 and the scenario’s duration is 40 minutes
+There are different types of requests in this script: Creation of a Context, Query, Subscription and Deletion. The first one creates a new device with set attributes, then you can query and subscribe it to receive information. Finally the last request can delete them.
 
-|ID	| GE API method	| Operation	| Type	| Payload	| Max. Concurrent Threads |
-|---|:--------------|:----------|:------|:----------|:------------------------|
-| 1 | /oauth2/authorize?response_type=code&client_id={client_id}&state={state}&redirect_uri=http://proxy.docker:8004/auth/fiware/callback	 |  Login on Keyrock	| POST	| ![Login data](./payloadLogin.png) | 100 |
-| 2 | /DSProductCatalog/api/catalogManagement/v2/category	 | Create new Category | POST | ![Create Category data](./payloadCreateCategory.png) |100 |
-| 3 | /logout	 |	Logout | POST | None  | 100 |
-
-Regarding the variables
-
-- **email**: Admin email to login on Keyrock.
-- **pass**: Admin pass for the email to login on Keyrock.
-- **category_name**: Name for the new Category.
-
-
-## Test Case 2.- Stress Scenario 2 – Create new Catalog ##
-
-It's analogous to the test case 1. The only difference is that we are creating a new Catalog instead of Category.
+We add two threads every 6 seconds to reach 100 and the scenario’s duration is 25 minutes
 
 |ID	| GE API method	| Operation	| Type	| Payload	| Max. Concurrent Threads |
 |---|:--------------|:----------|:------|:----------|:------------------------|
-| 1 | /oauth2/authorize?response_type=code&client_id={client_id}&state={state}&redirect_uri=http://proxy.docker:8004/auth/fiware/callback	 |  Login on Keyrock	| POST	| ![Login data](./payloadLogin.png) | 100 |
-| 2 | /DSProductCatalog/api/catalogManagement/v2/category	 | Create new Catalog | POST | ![Create Category data](./payloadCreateCatalog.png) |100 |
-| 3 | /logout	 |	Logout | POST | None  | 100 |
+|1  | /ngsi9/discoverContextAvailability | Look up for Nearby Brokers | POST | ![Look up nearby data](./payloadLookUpForNearby.png) | 25|
+|2  | /ngsi10/updateContext  | Create a new context | POST | ![Create new context data](./payloadCreateNewContext.png) | 25|
+|3  | /ngsi10/entity/Device.Temperature.${tempCounter} | Get all info about specific entity | GET | None  | 25|
+|4  | /ngsi10/entity/Device.Temperature.${tempCounter}/${ATTRIBUTE} | Get info for specific parameter in specific entity | GET | None | 25|
+|5  | /ngsi10/entity | Get all info for all entities | GET | None | 25|
+|6  | /ngsi10/queryContext | Query for one or more entities by ID | POST | ![Query context by ID](./payloadQueryContextID.png) | 25|
+|7  | /ngsi10/queryContext | Query for one or more entities by Type | POST | ![Query context by Type](./payloadQueryContextType.png) | 25|
+|8  | /ngsi10/queryContext | Query for one or more entities by GeoScope | POST | ![Query context by Geoscope](./payloadQueryContextGeoscope.png) | 25|
+|9  | /ngsi10/queryContext | Query for one or more entities by MetadataValues | POST | ![Query context by Metadata](./payloadQueryContextMetadata.png) | 25|
+|10 | /ngsi10/queryContext | Query for one or more entities by MultipleFilters | POST | ![Query context by Multiplefilters](./payloadQueryContextMultiplefilters.png) | 25|
+|11 | /ngsi10/subscribeContext | Subscribe context by ID | POST | ![Subscribe context by ID](./payloadSubscribeContextID.png) | 25|
+|12 | /ngsi10/subscribeContext | Subscribe context by Multiple filters | POST | ![Subscribe context by Multiplefilters](./payloadSubscribeContextMultiplefilters.png) | 25|
+|13 | /ngsi10/subscribeContext | Subscribe context by Type | POST | ![Subscribe context by Type](./payloadSubscribeContextType.png) | 25|
+|14 | /ngsi10/subscribeContext | Subscribe context by GeoScope | POST | ![Subscribe context by Geoscope](./payloadSubscribeContextGeoscope.png) |25|
+|15 | /ngsi10/subscribeContext | Subscribe context by Metadata values | POST | ![Subscribe context by Metadata](./payloadSubscribeContextMetadata.png) | 25|
+|16 | /ngsi10/subscription/${subscriptionId} |  Delete specified context by ID | DELETE | 25|
+|17 | /ngsi10/entity/Device.Temperature.${tempCounter} | Delete specific entity by ID | DELETE | 25|
 
 Regarding the variables
 
-- **email**: Admin email to login on Keyrock.
-- **pass**: Admin pass for the email to login on Keyrock.
-- **catalog_name**: Name for the new Catalog.
+- **HOST** -> IP or hostname of the host where FogFlow is deployed.
+- **PORT** -> Port where FogFlow/Broker is listening.
+- **ABSOLUTE_PATH** -> Path for jmx and csv files.
+- **ATTRIBUTE** -> Attribute variable to set when a new context is created or modified.
+- **tempCounter** -> Counter to generate ID's for new contexts.
 
-## Test Case 3.- Stability Scenario - Create new Catalog and Category (at the same time) ##
 
-The goal of this scenario is to check if the system is degraded with a moderate load for a long period of time. This case is composed by the two previous test cases: Create a category and catalog at the same time. The difference is that it's stability test not a stress one.
+## Test Case 2.- Stability Scenario 2 ##
 
-The test adds two thread (user) every 30 seconds to reach 40 users and it is running for 6 hours. 
+It's analogous to the test case 1.
 
-Actors and requests are the same than in the first and second test cases so it's not needed to explain them again.
+The only difference is the load and time set. In this case, we set 25 users (1 user every 7 seconds), for 6 hours.
